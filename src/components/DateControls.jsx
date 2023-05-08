@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./DateControls.css";
 
 export function DateControls({ onDateChange, datesQuery, initialDates }) {
-  console.log({ datesQuery, initialDates });
+  // console.log({ datesQuery, initialDates });
 
   return (
     <div className="date-controls">

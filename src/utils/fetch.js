@@ -13,7 +13,7 @@ async function fetchAllTags(fetchUrl) {
       },
       body: JSON.stringify(requestBody),
     });
-    console.log(response);
+    
     if (response.status !== 200) {
       throw new Error(`Response status text: ${response.status}.`);
     }

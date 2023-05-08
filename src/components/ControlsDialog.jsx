@@ -13,8 +13,6 @@ export function ControlsDialog({ onDateChange, datesQuery, initialDates }) {
 
   return (
     <dialog open>
-      <p>Greetings, one and all!</p>
-      {/* date pickers */}
       <DateControls
         onDateChange={onDateChange}
         datesQuery={datesQuery}
