@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { useData } from "./hooks/useData";
-import { useDb } from "./hooks/useDb";
 
 import { ControlsDialog } from "./components/ControlsDialog";
+import { TagsList } from "./components/TagsList";
 
 import "./App.css";
 
@@ -30,10 +30,8 @@ function App() {
   let filteredData;
   if (data) {
     filteredData = data.filter((tag) => {
-      let tagTimestamp = datesQuery.minDate;
-      if (tag.liveDate) {
-        tagTimestamp = tag.liveDate._seconds * 1000;
-      }
+      if (!tag.liveDate) return false; // TODO: handle null case
+      const tagTimestamp = tag.liveDate._seconds * 1000;
       // console.log("tag timestamp:", tagTimestamp);
       return (
         tagTimestamp >= datesQuery.minDate && tagTimestamp <= datesQuery.maxDate
@@ -62,14 +60,7 @@ function App() {
         initialDates={initialDates}
       />
       {/* tags list */}
-      {!isLoading && (<><p>Displaying {filteredData?.length} tags.</p>
-        <ul>
-          {filteredData.map((tag) => (
-            <li key={tag.id}>
-              <a href={`https://pornpen.art/tags/view/${tag.id}`}>{titleCase(tag.name)}</a>
-            </li>
-          ))}
-        </ul></>)}
+      {!isLoading && <TagsList filteredData={filteredData} />}
     </>
   );
 }
