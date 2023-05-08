@@ -1,23 +1,11 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { fetchAllTags } from "../utils/fetch";
 
+const fetchUrl =
+  "https://us-central1-dreampen-2273f.cloudfunctions.net/getLiveTagsCached";
+
 export function useData() {
-  const [data, setData] = useState([]);
+  const { data, error, isLoading } = useSWR(fetchUrl, fetchAllTags)
 
-  useEffect(() => {
-    // fetch most recent tags data
-    const fetchData = async () => {
-      const tagsData = await fetchAllTags();
-      if (!ignore) {
-        setData(tagsData);
-      }
-    };
-
-    let ignore = false;
-    fetchData();
-
-    return () => (ignore = true);
-  }, []);
-
-  return data;
+  return { data, error, isLoading }
 }

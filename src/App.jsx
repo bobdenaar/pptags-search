@@ -9,16 +9,11 @@ import "./App.css";
 
 function App() {
   // download tags data from pp
-  const data = useData();
-  // update indexedDb
-  const db = useDb(data);
+  const { data, error, isLoading } = useData();
 
   const [datesQuery, setDatesQuery] = useState({});
 
-  // console.log(data);
-  // console.log(Date.parse(datesQuery.startDate), Date.parse(datesQuery.endDate));
-
-  // compute groups for select options
+  // TODO: compute groups for select options
 
   let initialDates;
   useEffect(() => {
@@ -32,14 +27,30 @@ function App() {
 
   // console.log(datesQuery);
 
-  const filteredData = data.filter((tag) => {
-    if (!tag.liveDate) return false;
-    const tagTimestamp = tag.liveDate._seconds * 1000;
-    // console.log("tag timestamp:", tagTimestamp);
-    return (
-      tagTimestamp >= datesQuery.minDate && tagTimestamp <= datesQuery.maxDate
-    );
-  });
+  let filteredData;
+  if (data) {
+    filteredData = data.filter((tag) => {
+      let tagTimestamp = datesQuery.minDate;
+      if (tag.liveDate) {
+        tagTimestamp = tag.liveDate._seconds * 1000;
+      }
+      // console.log("tag timestamp:", tagTimestamp);
+      return (
+        tagTimestamp >= datesQuery.minDate && tagTimestamp <= datesQuery.maxDate
+      );
+    });
+    filteredData.sort((tagA, tagB) => {
+      const nameA = tagA.name.trim().toLowerCase();
+      const nameB = tagB.name.trim().toLowerCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
 
   return (
     <>
@@ -51,14 +62,14 @@ function App() {
         initialDates={initialDates}
       />
       {/* tags list */}
-      <p>Displaying {filteredData.length} tags.</p>
-      <ul>
-        {filteredData.map((tag) => (
-          <li key={tag.id}>
-            <a href={`https://pornpen.art/tags/view/${tag.id}`}>{titleCase(tag.name)}</a>
-          </li>
-        ))}
-      </ul>
+      {!isLoading && (<><p>Displaying {filteredData?.length} tags.</p>
+        <ul>
+          {filteredData.map((tag) => (
+            <li key={tag.id}>
+              <a href={`https://pornpen.art/tags/view/${tag.id}`}>{titleCase(tag.name)}</a>
+            </li>
+          ))}
+        </ul></>)}
     </>
   );
 }

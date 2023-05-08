@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { db } from "../db";
+import { db } from "../utils/db";
 
 export function useDb(data) {
   useEffect(() => {

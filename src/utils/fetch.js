@@ -1,7 +1,6 @@
 // get all tags from pp.art
-async function fetchAllTags() {
-  const fetchUrl =
-    "https://us-central1-dreampen-2273f.cloudfunctions.net/getLiveTagsCached";
+async function fetchAllTags(fetchUrl) {
+
   const requestBody = { data: null };
   try {
     const startTime = Date.now();
