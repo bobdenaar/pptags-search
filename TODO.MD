@@ -1,1 +1,2 @@
-- [useSWR](https://swr.vercel.app/)
+- ~~[useSWR](https://swr.vercel.app/)~~
+- store dates in local storage
