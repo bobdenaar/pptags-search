@@ -1,115 +1,46 @@
-import { useEffect, useState } from "react";
-
-import { useData } from "./hooks/useData";
+import { useTags } from "./hooks/useTags";
+import { useDates } from "./hooks/useDates";
 
 import { ControlsDialog } from "./components/ControlsDialog";
+import { ErrorMessage } from "./components/ErrorMessage";
+import { Spinner } from "./components/Spinner";
 import { TagsList } from "./components/TagsList";
 
 import "./App.css";
 
 function App() {
   // download tags data from pp
-  const { data, error, isLoading } = useData();
+  const { tags, error, isLoading } = useTags();
 
-  const [datesQuery, setDatesQuery] = useState({});
+  const { datesQuery, setDatesQuery, initialDates } = useDates(tags);
 
   // TODO: compute groups for select options
 
-  let initialDates;
-  useEffect(() => {
-    // dates selection
-    if (data && data.length !== 0) {
-      const [minDate, maxDate] = getMinMaxDates(data);
-      initialDates = { minDate, maxDate };
-      setDatesQuery(initialDates);
-    }
-  }, [data]);
-
-  // console.log(datesQuery);
-
-  let filteredData;
-  if (data) {
-    filteredData = data.filter((tag) => {
-      if (!tag.liveDate) return false; // TODO: handle null case
-      const tagTimestamp = tag.liveDate._seconds * 1000;
-      // console.log("tag timestamp:", tagTimestamp);
-      return (
-        tagTimestamp >= datesQuery.minDate && tagTimestamp <= datesQuery.maxDate
-      );
-    });
-    filteredData.sort((tagA, tagB) => {
-      const nameA = tagA.name.trim().toLowerCase();
-      const nameB = tagB.name.trim().toLowerCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-  }
+  let content = null;
+  if (error) content = <ErrorMessage />;
+  else if (isLoading) content = <Spinner />;
+  else
+    content = (
+      <>
+        {/* controls */}
+        <ControlsDialog
+          onDateChange={setDatesQuery}
+          datesQuery={datesQuery}
+          initialDates={initialDates}
+        />
+        {/* tags list */}
+        {!isLoading && (
+          <TagsList key="tagsList" tags={tags} dates={datesQuery} />
+        )}
+      </>
+    );
 
   return (
     <>
       <h1>Pornpen Community Tags Search Tool</h1>
-      {/* controls */}
-      <ControlsDialog
-        onDateChange={setDatesQuery}
-        datesQuery={datesQuery}
-        initialDates={initialDates}
-      />
-      {/* tags list */}
-      {!isLoading && <TagsList filteredData={filteredData} />}
+      {content}
     </>
   );
 }
 
 export default App;
-
-function getMinMaxDates(data) {
-  if (!data || data.length === 0) return [];
-
-  // get min and max date
-  let minDate, maxDate;
-  const oldest = data.reduce((a, b) => {
-    const timeA = a.liveDate ? a.liveDate._seconds : Infinity;
-    const timeB = b.liveDate ? b.liveDate._seconds : Infinity;
-    if (Math.min(timeA, timeB) === timeA) {
-      return a;
-    }
-    return b;
-  });
-  const latest = data.reduce((a, b) => {
-    const timeA = a.liveDate ? a.liveDate._seconds : -Infinity;
-    const timeB = b.liveDate ? b.liveDate._seconds : -Infinity;
-    if (Math.max(timeA, timeB) === timeA) {
-      return a;
-    }
-    return b;
-  });
-  minDate = Date.parse(new Date(oldest.liveDate._seconds * 1000));
-  maxDate = Date.parse(
-    new Date(latest.liveDate._seconds * 1000 + 24 * 3600 * 1000 - 1)
-  );
-
-  // console.log({ minDate, maxDate });
-  return [minDate, maxDate];
-}
-
-function titleCase(tagname) {
-  // remove underscore, split words
-  const words = tagname.trim().split(/[\s_]+/);
-
-  // title case
-  words.forEach((word, index) => {
-    try {
-      const titleCased = word[0].toUpperCase() + word.slice(1);
-      words[index] = titleCased;
-    } catch (error) {
-      console.log("error parsing word", word, "in string'", tagname, "':");
-    }
-  });
-
-  return words.join(" ");
-}

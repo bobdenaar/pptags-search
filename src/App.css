@@ -10,4 +10,9 @@ ul {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
+  padding: 0;
+}
+
+.dachshund {
+  width: 100%;
 }
