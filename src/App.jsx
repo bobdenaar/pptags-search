@@ -6,6 +6,9 @@ import { ErrorMessage } from "./components/ErrorMessage";
 import { Spinner } from "./components/Spinner";
 import { TagsList } from "./components/TagsList";
 
+import { getUniquePropertyValues } from "./utils/group";
+import { alphabeticalSort } from "./utils/sort";
+
 import "./App.css";
 
 function App() {
@@ -15,6 +18,22 @@ function App() {
   const { datesQuery, setDatesQuery, initialDates } = useDates(tags);
 
   // TODO: compute groups for select options
+  let categories, owners;
+  if (tags) {
+    categories = getUniquePropertyValues(tags, "category");
+    categories.sort(alphabeticalSort);
+
+    owners = getUniquePropertyValues(tags, "ownerUsername");
+    /* owners = owners.map((owner) => {
+      if (owner === "") owner = "anonymous";
+      return owner;
+    }); */
+    owners.sort((a, b) => {
+      return alphabeticalSort(a.toLowerCase(), b.toLowerCase());
+    });
+  }
+  console.log(categories);
+  console.log(owners);
 
   let content = null;
   if (error) content = <ErrorMessage />;
@@ -27,10 +46,18 @@ function App() {
           onDateChange={setDatesQuery}
           datesQuery={datesQuery}
           initialDates={initialDates}
+          categories={categories}
+          owners={owners}
         />
         {/* tags list */}
         {!isLoading && (
-          <TagsList key="tagsList" tags={tags} dates={datesQuery} />
+          <TagsList
+            key="tagsList"
+            tags={tags}
+            dates={datesQuery}
+            categories={categories}
+            owners={owners}
+          />
         )}
       </>
     );

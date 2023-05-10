@@ -1,40 +1,64 @@
 import { filterByDates } from "../utils/filter";
+import { getGroupedByProperty } from "../utils/group";
 import { alphabeticalSort } from "../utils/sort";
+import { titleCase } from "../utils/string";
 
-export function TagsList({ tags, dates }) {
+import "./TagsList.css";
+
+export function TagsList({ tags, dates, categories, owners }) {
   if (!tags) return null;
 
-  const filteredTags = filterByDates(tags, dates).sort(alphabeticalSort);
+  const filteredTags = filterByDates(tags, dates).sort((tagA, tagB) => {
+    const nameA = tagA.name.trim().toLowerCase();
+    const nameB = tagB.name.trim().toLowerCase();
+    return alphabeticalSort(nameA, nameB);
+  });
+
+  const tagsMap = new Map();
+  for (const tag of tags) {
+    tagsMap.set(tag.id, tag);
+  }
+
+  const tagIdsByCategory = getGroupedByProperty(filteredTags, "category");
+  const categoryLists = categories
+    .map((category) => {
+      let categoryName = category;
+      if (category === "environment") categoryName = "setting";
+      else if (category === "tags") categoryName = "body";
+
+      const tagIds = tagIdsByCategory[category] || [];
+      const tags = tagIds.map((tagId) => tagsMap.get(tagId));
+
+      if (tags.length === 0) return null;
+
+      return (
+        <li key={categoryName} className="category">
+          {`${titleCase(categoryName)} (${tags.length})`}
+          <ul className="tagsCategory">
+            {tags.map((tag) => (
+              <li key={tag.id} className="tag">
+                <a href={`https://pornpen.art/tags/view/${tag.id}`}>
+                  {titleCase(tag.name)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      );
+    })
+    .filter((category) => category !== null)
+    .sort((a, b) => {
+      const aName = a.key.toLowerCase();
+      const bName = b.key.toLowerCase();
+      return alphabeticalSort(aName, bName);
+    });
+
+  const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
 
   return (
     <>
       <p>Displaying {filteredTags?.length} tags.</p>
-      <ul>
-        {filteredTags.map((tag) => (
-          <li key={tag.id}>
-            <a href={`https://pornpen.art/tags/view/${tag.id}`} target="_blank">
-              {titleCase(tag.name)}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <ul>{categoryLists}</ul>
     </>
   );
-}
-
-function titleCase(tagname) {
-  // remove underscore, split words
-  const words = tagname.trim().split(/[\s_]+/);
-
-  // title case
-  words.forEach((word, index) => {
-    try {
-      const titleCased = word[0].toUpperCase() + word.slice(1);
-      words[index] = titleCased;
-    } catch (error) {
-      console.log("error parsing word", word, "in string'", tagname, "':");
-    }
-  });
-
-  return words.join(" ");
 }
