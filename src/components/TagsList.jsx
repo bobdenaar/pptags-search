@@ -33,11 +33,14 @@ export function TagsList({ tags, dates, categories, owners }) {
 
       return (
         <li key={categoryName} className="category">
-          {`${titleCase(categoryName)} (${tags.length})`}
+          <h2>{`${titleCase(categoryName)} (${tags.length})`}</h2>
           <ul className="tagsCategory">
             {tags.map((tag) => (
               <li key={tag.id} className="tag">
-                <a href={`https://pornpen.art/tags/view/${tag.id}`}>
+                <a
+                  href={`https://pornpen.art/tags/view/${tag.id}`}
+                  target="_blank"
+                >
                   {titleCase(tag.name)}
                 </a>
               </li>
