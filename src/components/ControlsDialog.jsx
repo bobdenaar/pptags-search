@@ -27,7 +27,7 @@ export function ControlsDialog({
         initialDates={initialDates}
       />
       
-      <label htmlFor="category">
+      {/* <label htmlFor="category">
         Categories{" "}
         <select id="category" name="category">
           <option value="">All</option>
@@ -48,7 +48,7 @@ export function ControlsDialog({
             </option>
           ))}
         </select>
-      </label>
+      </label> */}
 
       <button onClick={() => setShow(false)}>OK</button>
     </dialog>
