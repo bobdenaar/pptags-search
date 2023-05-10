@@ -32,8 +32,8 @@ function App() {
       return alphabeticalSort(a.toLowerCase(), b.toLowerCase());
     });
   }
-  console.log(categories);
-  console.log(owners);
+  // console.log(categories);
+  // console.log(owners);
 
   let content = null;
   if (error) content = <ErrorMessage />;
