@@ -50,15 +50,14 @@ function App() {
           owners={owners}
         />
         {/* tags list */}
-        {!isLoading && (
-          <TagsList
-            key="tagsList"
-            tags={tags}
-            dates={datesQuery}
-            categories={categories}
-            owners={owners}
-          />
-        )}
+        <TagsList
+          key="tagsList"
+          tags={tags}
+          dates={datesQuery}
+          categories={categories}
+          owners={owners}
+          isLoading={isLoading}
+        />
       </>
     );
 

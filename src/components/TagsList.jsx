@@ -1,18 +1,16 @@
+import { Spinner } from "./Spinner";
+
 import { filterByDates } from "../utils/filter";
 import { getGroupedByProperty } from "../utils/group";
-import { alphabeticalSort } from "../utils/sort";
+import { alphabeticalSort, tagsAlphabeticalSort } from "../utils/sort";
 import { titleCase } from "../utils/string";
 
 import "./TagsList.css";
 
-export function TagsList({ tags, dates, categories, owners }) {
+export function TagsList({ tags, dates, categories, owners, isLoading }) {
   if (!tags) return null;
 
-  const filteredTags = filterByDates(tags, dates).sort((tagA, tagB) => {
-    const nameA = tagA.name.trim().toLowerCase();
-    const nameB = tagB.name.trim().toLowerCase();
-    return alphabeticalSort(nameA, nameB);
-  });
+  const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
 
   const tagsMap = new Map();
   for (const tag of tags) {
@@ -58,7 +56,9 @@ export function TagsList({ tags, dates, categories, owners }) {
 
   const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
 
-  return (
+  return tags.length === 0 ? (
+    <Spinner />
+  ) : (
     <>
       <p>Displaying {filteredTags?.length} tags.</p>
       <ul>{categoryLists}</ul>
