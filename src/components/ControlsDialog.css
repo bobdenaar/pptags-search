@@ -1,9 +1,0 @@
-dialog {
-  width: calc(100% - 4rem);
-  border-radius: 8px;
-}
-
-input,
-select {
-  min-width: 10rem;
-}
