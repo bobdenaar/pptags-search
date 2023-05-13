@@ -1,8 +1,7 @@
 import { useState } from "react";
 
 import { DateControls } from "./DateControls";
-
-import { titleCase } from "../utils/string";
+import { GroupControls } from "./GroupControls";
 
 import "./ControlsDialog.css";
 
@@ -10,8 +9,8 @@ export function ControlsDialog({
   onDateChange,
   datesQuery,
   initialDates,
-  categories,
-  owners,
+  groupDisplayed,
+  onGroupChange,
 }) {
   const [show, setShow] = useState(false);
 
@@ -26,30 +25,10 @@ export function ControlsDialog({
         datesQuery={datesQuery}
         initialDates={initialDates}
       />
-      
-      {/* <label htmlFor="category">
-        Categories{" "}
-        <select id="category" name="category">
-          <option value="">All</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {titleCase(category)}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label htmlFor="owner">
-        Tag Artists{" "}
-        <select name="owner">
-          <option value="All">All</option>
-          {owners.map((owner) => (
-            <option key={owner} value={owner}>
-              {owner}
-            </option>
-          ))}
-        </select>
-      </label> */}
-
+      <GroupControls
+        groupDisplayed={groupDisplayed}
+        onGroupChange={onGroupChange}
+      />
       <button onClick={() => setShow(false)}>OK</button>
     </dialog>
   );

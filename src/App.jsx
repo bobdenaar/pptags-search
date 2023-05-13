@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { useTags } from "./hooks/useTags";
 import { useDates } from "./hooks/useDates";
 
@@ -16,6 +18,9 @@ function App() {
   const { tags, error, isLoading } = useTags();
 
   const { datesQuery, setDatesQuery, initialDates } = useDates(tags);
+  const [groupDisplayed, setGroupDisplayed] = useState("category");
+
+  console.log("Group displayed:", groupDisplayed);
 
   // TODO: compute groups for select options
   let categories, owners;
@@ -40,8 +45,8 @@ function App() {
           onDateChange={setDatesQuery}
           datesQuery={datesQuery}
           initialDates={initialDates}
-          categories={categories}
-          owners={owners}
+          groupDisplayed={groupDisplayed}
+          onGroupChange={setGroupDisplayed}
         />
         {/* tags list */}
         <TagsList
@@ -51,29 +56,32 @@ function App() {
           categories={categories}
           owners={owners}
           isLoading={isLoading}
+          groupDisplayed={groupDisplayed}
         />
       </>
     );
 
   return (
     <>
-    <header>
-      <h1>Pornpen Community Tags Search Tool</h1>
-    </header>
+      <header>
+        <h1>Pornpen Community Tags Search Tool</h1>
+      </header>
       {content}
+      <footer>
+        <em>Made with 😅 by dachshunds</em>
+      </footer>
     </>
   );
 }
 
 export default App;
 function formatOwnersUsernames(owners) {
-  owners = owners.map((owner) => {
+  /* owners = owners.map((owner) => {
     if (owner === "") owner = "-- author unknown --";
     return owner;
-  });
+  }); */
   owners.sort((a, b) => {
     return alphabeticalSort(a.toLowerCase(), b.toLowerCase());
   });
   return owners;
 }
-

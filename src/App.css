@@ -13,3 +13,9 @@ ul {
 .dachshund {
   width: 100%;
 }
+
+footer {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: #666;
+}

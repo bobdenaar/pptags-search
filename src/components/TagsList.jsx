@@ -9,9 +9,9 @@ import { titleCase } from "../utils/string";
 
 import "./TagsList.css";
 
-export function TagsList({ tags, dates, categories, owners }) {
+export function TagsList({ tags, dates, categories, owners, groupDisplayed }) {
   if (!tags) return null;
-  
+
   const startTime = Date.now();
 
   const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
@@ -21,12 +21,21 @@ export function TagsList({ tags, dates, categories, owners }) {
     tagsMap.set(tag.id, tag);
   }
 
-  const tagIdsByCategory = getGroupedByProperty(filteredTags, "category");
-  const categoryLists = makeCategoryLists(
-    categories,
-    tagIdsByCategory,
-    tagsMap
-  );
+  let groups = [];
+
+  switch (groupDisplayed) {
+    case "owner": {
+      const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
+      groups = makeOwnerLists(owners, tagIdsByOwner, tagsMap);
+      break;
+    }
+
+    case "category":
+    default: {
+      const tagIdsByCategory = getGroupedByProperty(filteredTags, "category");
+      groups = makeCategoryLists(categories, tagIdsByCategory, tagsMap);
+    }
+  }
 
   const elapsed = Date.now() - startTime;
   console.log(`TagsList took ${elapsed}ms to render.`);
@@ -38,9 +47,30 @@ export function TagsList({ tags, dates, categories, owners }) {
   ) : (
     <>
       <p>Displaying {filteredTags?.length} tags.</p>
-      <ul>{categoryLists}</ul>
+      <ul>{groups}</ul>
     </>
   );
+}
+
+function makeOwnerLists(owners, tagIdsByOwner, tagsMap) {
+  return owners
+    .map((owner) => {
+      let ownerName = owner;
+      if (owner === "") ownerName = "-- anonymous --";
+
+      const tagIds = tagIdsByOwner[owner] || [];
+      const tags = tagIds.map((tagId) => tagsMap.get(tagId));
+
+      if (tags.length === 0) return null;
+
+      return <Group key={ownerName} groupName={ownerName} tags={tags} />;
+    })
+    .filter((owner) => owner !== null)
+    .sort((a, b) => {
+      const aName = a.key.toLowerCase();
+      const bName = b.key.toLowerCase();
+      return alphabeticalSort(aName, bName);
+    });
 }
 
 function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
@@ -55,9 +85,7 @@ function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
 
       if (tags.length === 0) return null;
 
-      return (
-        <Category key={categoryName} categoryName={categoryName} tags={tags} />
-      );
+      return <Group key={categoryName} groupName={titleCase(categoryName)} tags={tags} />;
     })
     .filter((category) => category !== null)
     .sort((a, b) => {
@@ -67,12 +95,12 @@ function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
     });
 }
 
-function Category({ categoryName, tags }) {
+function Group({ groupName, tags }) {
   const [show, setShow] = useState(true);
 
   return (
-    <li className="category">
-      <h2 onClick={() => setShow(!show)}>{`${titleCase(categoryName)} (${
+    <li className="group">
+      <h2 onClick={() => setShow(!show)}>{`${groupName} (${
         tags.length
       })`}</h2>
       {show && (
