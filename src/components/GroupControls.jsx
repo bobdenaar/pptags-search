@@ -2,8 +2,6 @@ export function GroupControls({ groupDisplayed, onGroupChange }) {
   // React component for the group controls
   // two buttons radio input, one for category, one for owners
 
-  console.log("GroupControls", groupDisplayed, onGroupChange)
-
   return (
     <div className="group-controls">
       Group by:{" "}

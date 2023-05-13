@@ -20,8 +20,6 @@ function App() {
   const { datesQuery, setDatesQuery, initialDates } = useDates(tags);
   const [groupDisplayed, setGroupDisplayed] = useState("category");
 
-  console.log("Group displayed:", groupDisplayed);
-
   // TODO: compute groups for select options
   let categories, owners;
   if (tags) {
@@ -75,6 +73,7 @@ function App() {
 }
 
 export default App;
+
 function formatOwnersUsernames(owners) {
   /* owners = owners.map((owner) => {
     if (owner === "") owner = "-- author unknown --";
