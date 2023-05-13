@@ -19,15 +19,26 @@ export function getMinMaxDates(data) {
     }
     return b;
   });
-  minDate = Date.parse(new Date(oldest.liveDate._seconds * 1000));
+  minDate = timestampZeroSeconds(oldest.liveDate._seconds * 1000);
   maxDate = timestampBeforeMidnight(latest.liveDate._seconds * 1000);
-  
+
   return { minDate, maxDate };
 }
 
-function timestampBeforeMidnight(timestamp) {
+export function timestampZeroSeconds(timestamp) {
+  // take timestamp and return timestamp of the same day at 00:00:00
+  const date = new Date(timestamp);
+  date.setUTCHours(0, 0, 0, 0);
+  return date.getTime();
+}
+
+export function timestampBeforeMidnight(timestamp) {
   // take timestamp and return timestamp of the day before midnight
   const date = new Date(timestamp);
-  date.setHours(23, 59, 59, 999);
+  date.setUTCHours(23, 59, 59, 999);
   return date.getTime();
+}
+
+export function timestampToISODate(timestamp) {
+  if (timestamp) return new Date(timestamp).toISOString().split("T")[0];
 }

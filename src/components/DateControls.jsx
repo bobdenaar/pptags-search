@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { timestampBeforeMidnight, timestampToISODate, timestampZeroSeconds } from "../utils/date";
 
 import "./DateControls.css";
 
 export function DateControls({ onDateChange, datesQuery, initialDates }) {
-  // console.log({ datesQuery, initialDates });
+  console.log({ datesQuery, initialDates });
 
   return (
     <div className="date-controls">
@@ -18,7 +18,7 @@ export function DateControls({ onDateChange, datesQuery, initialDates }) {
           onChange={(e) =>
             onDateChange((previousDatesQuery) => ({
               ...previousDatesQuery,
-              minDate: +new Date(e.target.value),
+              minDate: timestampZeroSeconds(+new Date(e.target.value)),
             }))
           }
           min={timestampToISODate(initialDates?.minDate) || ""}
@@ -36,7 +36,7 @@ export function DateControls({ onDateChange, datesQuery, initialDates }) {
           onChange={(e) =>
             onDateChange((previousDatesQuery) => ({
               ...previousDatesQuery,
-              maxDate: +new Date(e.target.value),
+              maxDate: timestampBeforeMidnight(+new Date(e.target.value)),
             }))
           }
           min={timestampToISODate(initialDates?.minDate) || ""}
@@ -45,8 +45,4 @@ export function DateControls({ onDateChange, datesQuery, initialDates }) {
       </label>
     </div>
   );
-}
-
-function timestampToISODate(timestamp) {
-  if (timestamp) return new Date(timestamp).toISOString().split("T")[0];
 }
