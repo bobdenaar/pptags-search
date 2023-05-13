@@ -11,8 +11,7 @@ import "./TagsList.css";
 
 export function TagsList({ tags, dates, categories, owners }) {
   if (!tags) return null;
-
-  console.log("received tags:", tags);
+  
   const startTime = Date.now();
 
   const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
