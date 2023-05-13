@@ -15,7 +15,7 @@
 }
 
 a::before {
-  content: "- ";
+  content: "• ";
 }
 
 a {
@@ -31,7 +31,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  justify-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -39,6 +39,7 @@ body {
 h1 {
   /* font-size: 3.2em; */
   line-height: 1.1;
+  text-align: center;
 }
 
 button {
@@ -51,6 +52,9 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 button:hover {
   border-color: #646cff;

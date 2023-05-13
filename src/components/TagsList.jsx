@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Spinner } from "./Spinner";
 
 import { filterByDates } from "../utils/filter";
@@ -7,8 +9,10 @@ import { titleCase } from "../utils/string";
 
 import "./TagsList.css";
 
-export function TagsList({ tags, dates, categories }) {
+export function TagsList({ tags, dates, categories, owners }) {
   if (!tags) return null;
+  
+  const startTime = Date.now();
 
   const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
 
@@ -23,6 +27,9 @@ export function TagsList({ tags, dates, categories }) {
     tagIdsByCategory,
     tagsMap
   );
+
+  const elapsed = Date.now() - startTime;
+  console.log(`TagsList took ${elapsed}ms to render.`);
 
   // const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
 
@@ -49,21 +56,7 @@ function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
       if (tags.length === 0) return null;
 
       return (
-        <li key={categoryName} className="category">
-          <h2>{`${titleCase(categoryName)} (${tags.length})`}</h2>
-          <ul className="tagsList">
-            {tags.map((tag) => (
-              <li key={tag.id} className="tag">
-                <a
-                  href={`https://pornpen.art/tags/view/${tag.id}`}
-                  target="_blank"
-                >
-                  {titleCase(tag.name)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </li>
+        <Category key={categoryName} categoryName={categoryName} tags={tags} />
       );
     })
     .filter((category) => category !== null)
@@ -72,4 +65,30 @@ function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
       const bName = b.key.toLowerCase();
       return alphabeticalSort(aName, bName);
     });
+}
+
+function Category({ categoryName, tags }) {
+  const [show, setShow] = useState(true);
+
+  return (
+    <li className="category">
+      <h2 onClick={() => setShow(!show)}>{`${titleCase(categoryName)} (${
+        tags.length
+      })`}</h2>
+      {show && (
+        <ul className="tagsList">
+          {tags.map((tag) => (
+            <li key={tag.id} className="tag">
+              <a
+                href={`https://pornpen.art/tags/view/${tag.id}`}
+                target="_blank"
+              >
+                {titleCase(tag.name)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
+  );
 }
