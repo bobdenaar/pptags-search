@@ -24,13 +24,7 @@ function App() {
     categories.sort(alphabeticalSort);
 
     owners = getUniquePropertyValues(tags, "ownerUsername");
-    /* owners = owners.map((owner) => {
-      if (owner === "") owner = "anonymous";
-      return owner;
-    }); */
-    owners.sort((a, b) => {
-      return alphabeticalSort(a.toLowerCase(), b.toLowerCase());
-    });
+    owners = formatOwnersUsernames(owners);
   }
   // console.log(categories);
   // console.log(owners);
@@ -63,10 +57,23 @@ function App() {
 
   return (
     <>
+    <header>
       <h1>Pornpen Community Tags Search Tool</h1>
+    </header>
       {content}
     </>
   );
 }
 
 export default App;
+function formatOwnersUsernames(owners) {
+  owners = owners.map((owner) => {
+    if (owner === "") owner = "-- author unknown --";
+    return owner;
+  });
+  owners.sort((a, b) => {
+    return alphabeticalSort(a.toLowerCase(), b.toLowerCase());
+  });
+  return owners;
+}
+
