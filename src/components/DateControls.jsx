@@ -1,7 +1,5 @@
 import { timestampBeforeMidnight, timestampToISODate, timestampZeroSeconds } from "../utils/date";
 
-import "./DateControls.css";
-
 export function DateControls({ onDateChange, datesQuery, initialDates }) {
   return (
     <div className="date-controls">
