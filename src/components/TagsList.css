@@ -4,7 +4,7 @@
   margin-top: 0 0.6rem;
 }
 
-.tagsCategory {
+.tagsList {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

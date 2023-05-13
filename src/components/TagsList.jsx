@@ -7,7 +7,7 @@ import { titleCase } from "../utils/string";
 
 import "./TagsList.css";
 
-export function TagsList({ tags, dates, categories, owners, isLoading }) {
+export function TagsList({ tags, dates, categories }) {
   if (!tags) return null;
 
   const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
@@ -18,7 +18,26 @@ export function TagsList({ tags, dates, categories, owners, isLoading }) {
   }
 
   const tagIdsByCategory = getGroupedByProperty(filteredTags, "category");
-  const categoryLists = categories
+  const categoryLists = makeCategoryLists(
+    categories,
+    tagIdsByCategory,
+    tagsMap
+  );
+
+  // const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
+
+  return filteredTags.length === 0 ? (
+    <Spinner />
+  ) : (
+    <>
+      <p>Displaying {filteredTags?.length} tags.</p>
+      <ul>{categoryLists}</ul>
+    </>
+  );
+}
+
+function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
+  return categories
     .map((category) => {
       let categoryName = category;
       if (category === "environment") categoryName = "setting";
@@ -32,7 +51,7 @@ export function TagsList({ tags, dates, categories, owners, isLoading }) {
       return (
         <li key={categoryName} className="category">
           <h2>{`${titleCase(categoryName)} (${tags.length})`}</h2>
-          <ul className="tagsCategory">
+          <ul className="tagsList">
             {tags.map((tag) => (
               <li key={tag.id} className="tag">
                 <a
@@ -53,15 +72,4 @@ export function TagsList({ tags, dates, categories, owners, isLoading }) {
       const bName = b.key.toLowerCase();
       return alphabeticalSort(aName, bName);
     });
-
-  const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
-
-  return tags.length === 0 ? (
-    <Spinner />
-  ) : (
-    <>
-      <p>Displaying {filteredTags?.length} tags.</p>
-      <ul>{categoryLists}</ul>
-    </>
-  );
 }

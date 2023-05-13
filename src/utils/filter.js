@@ -1,10 +1,16 @@
 export function filterByDates(data, datesQuery) {
+  if (!data || !datesQuery.minDate) return [];
+
+  const minDateSeconds = datesQuery.minDate / 1000;
   let filteredData = [];
+
   if (data) {
     filteredData = data.filter((tag) => {
-      if (!tag.liveDate) return false; // TODO: handle null case
+      // handle unknown dates: if no liveDate, use minDate
+      if (!tag.liveDate) {
+        tag.liveDate = { _seconds: minDateSeconds };
+      }
       const tagTimestamp = tag.liveDate._seconds * 1000;
-      // console.log("tag timestamp:", tagTimestamp);
       return (
         tagTimestamp >= datesQuery.minDate && tagTimestamp <= datesQuery.maxDate
       );
