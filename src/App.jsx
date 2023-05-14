@@ -8,7 +8,6 @@ import { ErrorMessage } from "./components/ErrorMessage";
 import { Spinner } from "./components/Spinner";
 import { TagsList } from "./components/TagsList";
 
-import { getUniquePropertyValues } from "./utils/group";
 import { alphabeticalSort } from "./utils/sort";
 
 import "./App.css";
@@ -18,19 +17,7 @@ function App() {
   const { tags, error, isLoading } = useTags();
 
   const { datesQuery, setDatesQuery, initialDates } = useDates(tags);
-  const [groupDisplayed, setGroupDisplayed] = useState("category");
-
-  // TODO: compute groups for select options
-  let categories, owners;
-  if (tags) {
-    categories = getUniquePropertyValues(tags, "category");
-    categories.sort(alphabeticalSort);
-
-    owners = getUniquePropertyValues(tags, "ownerUsername");
-    owners = formatOwnersUsernames(owners);
-  }
-  // console.log(categories);
-  // console.log(owners);
+  const [displayedGroup, setDisplayedGroup] = useState("category");
 
   let content = null;
   if (error) content = <ErrorMessage />;
@@ -43,18 +30,16 @@ function App() {
           onDateChange={setDatesQuery}
           datesQuery={datesQuery}
           initialDates={initialDates}
-          groupDisplayed={groupDisplayed}
-          onGroupChange={setGroupDisplayed}
+          displayedGroup={displayedGroup}
+          onGroupChange={setDisplayedGroup}
         />
         {/* tags list */}
         <TagsList
           key="tagsList"
           tags={tags}
           dates={datesQuery}
-          categories={categories}
-          owners={owners}
           isLoading={isLoading}
-          groupDisplayed={groupDisplayed}
+          displayedGroup={displayedGroup}
         />
       </>
     );

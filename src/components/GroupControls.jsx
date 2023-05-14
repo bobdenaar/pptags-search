@@ -1,4 +1,4 @@
-export function GroupControls({ groupDisplayed, onGroupChange }) {
+export function GroupControls({ displayedGroup, onGroupChange }) {
   // React component for the group controls
   // two buttons radio input, one for category, one for owners
 
@@ -11,7 +11,7 @@ export function GroupControls({ groupDisplayed, onGroupChange }) {
           name="group"
           id="group-category"
           value="category"
-          checked={groupDisplayed === "category"}
+          checked={displayedGroup === "category"}
           onChange={() => onGroupChange("category")}
         />
         Categories
@@ -22,7 +22,7 @@ export function GroupControls({ groupDisplayed, onGroupChange }) {
           name="group"
           id="group-owner"
           value="owner"
-          checked={groupDisplayed === "owner"}
+          checked={displayedGroup === "owner"}
           onChange={() => onGroupChange("owner")}
         />
         Tag Artists

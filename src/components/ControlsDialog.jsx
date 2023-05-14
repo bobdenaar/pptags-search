@@ -9,7 +9,7 @@ export function ControlsDialog({
   onDateChange,
   datesQuery,
   initialDates,
-  groupDisplayed,
+  displayedGroup,
   onGroupChange,
 }) {
   const [show, setShow] = useState(false);
@@ -26,7 +26,7 @@ export function ControlsDialog({
         initialDates={initialDates}
       />
       <GroupControls
-        groupDisplayed={groupDisplayed}
+        displayedGroup={displayedGroup}
         onGroupChange={onGroupChange}
       />
       <button onClick={() => setShow(false)}>OK</button>

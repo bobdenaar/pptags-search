@@ -1,6 +1,5 @@
-import { useState } from "react";
-
 import { Spinner } from "./Spinner";
+import { TagsGroup } from "./TagsGroup";
 
 import { filterByDates } from "../utils/filter";
 import { getGroupedByProperty } from "../utils/group";
@@ -9,38 +8,17 @@ import { titleCase } from "../utils/string";
 
 import "./TagsList.css";
 
-export function TagsList({ tags, dates, categories, owners, groupDisplayed }) {
+export function TagsList({ tags, dates, displayedGroup }) {
   if (!tags) return null;
 
   const startTime = Date.now();
 
   const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
 
-  const tagsMap = new Map();
-  for (const tag of tags) {
-    tagsMap.set(tag.id, tag);
-  }
-
-  let groups = [];
-
-  switch (groupDisplayed) {
-    case "owner": {
-      const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
-      groups = makeOwnerLists(owners, tagIdsByOwner, tagsMap);
-      break;
-    }
-
-    case "category":
-    default: {
-      const tagIdsByCategory = getGroupedByProperty(filteredTags, "category");
-      groups = makeCategoryLists(categories, tagIdsByCategory, tagsMap);
-    }
-  }
+  const groups = makeGroupLists(filteredTags, displayedGroup);
 
   const elapsed = Date.now() - startTime;
   console.log(`TagsList took ${elapsed}ms to render.`);
-
-  // const tagIdsByOwner = getGroupedByProperty(filteredTags, "ownerUsername");
 
   return filteredTags.length === 0 ? (
     <Spinner />
@@ -52,71 +30,39 @@ export function TagsList({ tags, dates, categories, owners, groupDisplayed }) {
   );
 }
 
-function makeOwnerLists(owners, tagIdsByOwner, tagsMap) {
-  return owners
-    .map((owner) => {
-      let ownerName = owner;
-      if (owner === "") ownerName = "-- anonymous --";
+// takes a list of tags and a group name
+// returns a list of tag groups sorted alphabetically
 
-      const tagIds = tagIdsByOwner[owner] || [];
+function makeGroupLists(tags, groupName) {
+  const tagsMap = new Map();
+  for (const tag of tags) {
+    tagsMap.set(tag.id, tag);
+  }
+
+  if (groupName === "owner") groupName = "ownerUsername";
+  const tagIdsByGroup = getGroupedByProperty(tags, groupName);
+
+  return Object.entries(tagIdsByGroup)
+    .map(([group, tagIds]) => {
       const tags = tagIds.map((tagId) => tagsMap.get(tagId));
 
       if (tags.length === 0) return null;
+      // handle ownerUsername being empty
+      if (groupName === "ownerUsername" && group === "")
+        group = "-- anonymous --";
+      // handle category special cases
+      if (groupName === "category" && group === "environment")
+        group = "setting";
+      if (groupName === "category" && group === "tags") group = "body";
+      // handle capitalization
+      if (groupName === "category") group = titleCase(group);
 
-      return <Group key={ownerName} groupName={ownerName} tags={tags} />;
+      return <TagsGroup key={group} groupName={group} tags={tags} />;
     })
-    .filter((owner) => owner !== null)
+    .filter((group) => group !== null)
     .sort((a, b) => {
       const aName = a.key.toLowerCase();
       const bName = b.key.toLowerCase();
       return alphabeticalSort(aName, bName);
     });
-}
-
-function makeCategoryLists(categories, tagIdsByCategory, tagsMap) {
-  return categories
-    .map((category) => {
-      let categoryName = category;
-      if (category === "environment") categoryName = "setting";
-      else if (category === "tags") categoryName = "body";
-
-      const tagIds = tagIdsByCategory[category] || [];
-      const tags = tagIds.map((tagId) => tagsMap.get(tagId));
-
-      if (tags.length === 0) return null;
-
-      return <Group key={categoryName} groupName={titleCase(categoryName)} tags={tags} />;
-    })
-    .filter((category) => category !== null)
-    .sort((a, b) => {
-      const aName = a.key.toLowerCase();
-      const bName = b.key.toLowerCase();
-      return alphabeticalSort(aName, bName);
-    });
-}
-
-function Group({ groupName, tags }) {
-  const [show, setShow] = useState(true);
-
-  return (
-    <li className="group">
-      <h2 onClick={() => setShow(!show)}>{`${groupName} (${
-        tags.length
-      })`}</h2>
-      {show && (
-        <ul className="tagsList">
-          {tags.map((tag) => (
-            <li key={tag.id} className="tag">
-              <a
-                href={`https://pornpen.art/tags/view/${tag.id}`}
-                target="_blank"
-              >
-                {titleCase(tag.name)}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </li>
-  );
 }
