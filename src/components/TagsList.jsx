@@ -1,4 +1,3 @@
-import { Spinner } from "./Spinner";
 import { TagsGroup } from "./TagsGroup";
 
 import { filterByDates } from "../utils/filter";
@@ -14,15 +13,14 @@ export function TagsList({ tags, dates, displayedGroup }) {
   const startTime = Date.now();
 
   const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
+  if (filteredTags.length === 0) return null;
 
   const groups = makeGroupLists(filteredTags, displayedGroup);
 
   const elapsed = Date.now() - startTime;
   console.log(`TagsList took ${elapsed}ms to render.`);
 
-  return filteredTags.length === 0 ? (
-    <Spinner />
-  ) : (
+  return (
     <>
       <p>Displaying {filteredTags?.length} tags.</p>
       <ul>{groups}</ul>
