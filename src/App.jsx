@@ -16,7 +16,7 @@ function App() {
   return (
     <>
       <header>
-        <h1>Pornpen Community Tags Search Tool</h1>
+        <h1>Pornpen Community Tags Listing Tool</h1>
       </header>
       {content}
       <footer>

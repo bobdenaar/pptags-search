@@ -7,12 +7,12 @@ import { titleCase } from "../utils/string";
 
 import "./TagsList.css";
 
-export function TagsList({ tags, dates, displayedGroup }) {
+export function TagsList({ tags, initialDates, datesQuery, displayedGroup }) {
   if (!tags) return null;
 
   const startTime = Date.now();
 
-  const filteredTags = filterByDates(tags, dates).sort(tagsAlphabeticalSort);
+  const filteredTags = filterByDates(tags, datesQuery, initialDates).sort(tagsAlphabeticalSort);
   if (filteredTags.length === 0) return null;
 
   const groups = makeGroupLists(filteredTags, displayedGroup);

@@ -24,7 +24,8 @@ export function ControlledList({ tags, isLoading }) {
         <TagsList
           key="tagsList"
           tags={tags}
-          dates={datesQuery}
+          initialDates={initialDates}
+          datesQuery={datesQuery}
           displayedGroup={displayedGroup}
           isLoading={isLoading}
         />
