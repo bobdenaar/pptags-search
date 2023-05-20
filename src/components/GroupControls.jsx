@@ -27,6 +27,17 @@ export function GroupControls({ displayedGroup, onGroupChange }) {
         />
         Tag Artists
       </label>
+      <label htmlFor="group-none">
+        <input
+          type="radio"
+          name="group"
+          id="group-none"
+          value="none"
+          checked={displayedGroup === "none"}
+          onChange={() => onGroupChange("none")}
+        />
+        Don't group
+      </label>
     </div>
   );
 }

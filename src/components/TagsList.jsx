@@ -32,6 +32,8 @@ export function TagsList({ tags, dates, displayedGroup }) {
 // returns a list of tag groups sorted alphabetically
 
 function makeGroupLists(tags, groupName) {
+  if (groupName === "none") return <TagsGroup groupName={"All tags"} tags={tags} />;
+
   const tagsMap = new Map();
   for (const tag of tags) {
     tagsMap.set(tag.id, tag);
