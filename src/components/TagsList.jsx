@@ -32,7 +32,8 @@ export function TagsList({ tags, dates, displayedGroup }) {
 // returns a list of tag groups sorted alphabetically
 
 function makeGroupLists(tags, groupName) {
-  if (groupName === "none") return <TagsGroup groupName={"All tags"} tags={tags} />;
+  if (groupName === "none")
+    return <TagsGroup groupName={"All tags"} tags={tags} />;
 
   const tagsMap = new Map();
   for (const tag of tags) {
@@ -43,6 +44,7 @@ function makeGroupLists(tags, groupName) {
   const tagIdsByGroup = getGroupedByProperty(tags, groupName);
 
   return Object.entries(tagIdsByGroup)
+    .filter((group) => group !== null)
     .map(([group, tagIds]) => {
       const tags = tagIds.map((tagId) => tagsMap.get(tagId));
 
@@ -59,7 +61,6 @@ function makeGroupLists(tags, groupName) {
 
       return <TagsGroup key={group} groupName={group} tags={tags} />;
     })
-    .filter((group) => group !== null)
     .sort((a, b) => {
       const aName = a.key.toLowerCase();
       const bName = b.key.toLowerCase();

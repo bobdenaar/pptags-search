@@ -18,8 +18,8 @@ select {
 
 .group-controls {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-wrap: auto;
+  align-items: center;
 }
 
 .group-controls label {
@@ -29,6 +29,7 @@ select {
 }
 
 .group-controls > * {
+  padding-left: 0.2rem;
   margin: 0.2rem 0;
 }
 

@@ -7,7 +7,7 @@ import { TagsList } from "./TagsList";
 
 export function ControlledList({ tags, isLoading }) {
   const { datesQuery, setDatesQuery, initialDates } = useDates(tags);
-  const [displayedGroup, setDisplayedGroup] = useState("none");
+  const [displayedGroup, setDisplayedGroup] = useState("date");
 
   return (
     <>

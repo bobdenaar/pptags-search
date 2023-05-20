@@ -5,6 +5,17 @@ export function GroupControls({ displayedGroup, onGroupChange }) {
   return (
     <div className="group-controls">
       Group by:{" "}
+      <label htmlFor="group-date">
+        <input
+          type="radio"
+          name="group"
+          id="group-date"
+          value="date"
+          checked={displayedGroup === "date"}
+          onChange={() => onGroupChange("date")}
+        />
+        Release Date
+      </label>
       <label htmlFor="group-category">
         <input
           type="radio"
@@ -14,7 +25,7 @@ export function GroupControls({ displayedGroup, onGroupChange }) {
           checked={displayedGroup === "category"}
           onChange={() => onGroupChange("category")}
         />
-        Categories
+        Category
       </label>
       <label htmlFor="group-owner">
         <input
@@ -25,7 +36,7 @@ export function GroupControls({ displayedGroup, onGroupChange }) {
           checked={displayedGroup === "owner"}
           onChange={() => onGroupChange("owner")}
         />
-        Tag Artists
+        Tag Artist
       </label>
       <label htmlFor="group-none">
         <input
