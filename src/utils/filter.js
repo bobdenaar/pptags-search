@@ -1,7 +1,7 @@
-export function filterByDates(data, datesQuery) {
+export function filterByDates(data, datesQuery, initialDates) {
   if (!data || !datesQuery.minDate) return [];
 
-  const minDateSeconds = datesQuery.minDate / 1000;
+  const minDateSeconds = initialDates.minDate / 1000;
   let filteredData = [];
 
   if (data) {

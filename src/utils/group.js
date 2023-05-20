@@ -13,35 +13,19 @@ Sample tag JSON:
 }
  */
 
-// get arrays of tag ids grouped by category from a tag array
-export function getCategories(tags) {
-  const categories = {};
-  tags.forEach((tag) => {
-    if (categories[tag.category]) {
-      categories[tag.category].push(tag.id);
-    } else {
-      categories[tag.category] = [tag.id];
-    }
-  });
-  return categories;
-}
-
-// get arrays of tag ids grouped by ownerUsername from a tag array
-export function getOwnerUsernames(tags) {
-  const ownerUsernames = {};
-  tags.forEach((tag) => {
-    if (ownerUsernames[tag.ownerUsername]) {
-      ownerUsernames[tag.ownerUsername].push(tag.id);
-    } else {
-      ownerUsernames[tag.ownerUsername] = [tag.id];
-    }
-  });
-  return ownerUsernames;
-}
+import { timestampZeroSeconds, timestampToISODate } from "./date.js";
 
 // get arrays of tag ids grouped by property from a tag array
 // property can be any property of a tag
 export function getGroupedByProperty(tags, property) {
+  // if property is "date", compute the date string at midnight from the timestamp
+  if (property === "date") {
+    tags.forEach((tag) => {
+      const date = timestampZeroSeconds(tag.liveDate._seconds * 1000);
+      tag.date = timestampToISODate(date);
+    });
+  }
+
   const grouped = {};
   tags.forEach((tag) => {
     if (grouped[tag[property]]) {

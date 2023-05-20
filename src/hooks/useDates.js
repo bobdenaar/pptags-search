@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getMinMaxDates } from "../utils/date";
+import { getMinMaxDates, timestampZeroSeconds } from "../utils/date";
 
 export function useDates(tags) {
   const [datesQuery, setDatesQuery] = useState({});
@@ -8,9 +8,9 @@ export function useDates(tags) {
   useEffect(() => {
     // dates selection
     if (tags && tags.length !== 0) {
-      const computedDates = getMinMaxDates(tags);
-      setInitialDates(computedDates);
-      setDatesQuery(computedDates);
+      const { minDate, maxDate } = getMinMaxDates(tags);
+      setInitialDates({ minDate, maxDate });
+      setDatesQuery({ minDate: timestampZeroSeconds(maxDate), maxDate });
     }
   }, [tags]);
 
