@@ -36,3 +36,10 @@ select {
 .group-controls input {
   max-width: 2rem;
 }
+
+@media all and (max-width: 480px) {
+  .group-controls {
+    flex-direction: column;
+    align-items: start;
+  }
+}
